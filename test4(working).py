@@ -64,9 +64,9 @@ def main():
     for i in range(1,Parents+1):
         current_mutant = key_prefix4+str(i)
         offspring_gene[current_mutant] = Mutation(parent_gene,mutation_chance,i)
-        print(offspring_gene[current_mutant])
     print('final combo',offspring_gene)
     Crossover(parent_gene,Crossover_chance,Num)
+
 
 
 
@@ -85,6 +85,8 @@ def roulette_wheel_selection(pool_gene,pool_fit,Num):
     while roulette_drop > fitness_sum:
         i=i+1
         fitness_sum = fitness_sum + pool_fit[i]
+    if (i==-1):
+        i=i+1
     chosen_parent = pool_gene [key_prefix+str(i)]
     p=p+1
     return chosen_parent
@@ -122,11 +124,13 @@ def Crossover(parent_gene,Crossover_chance,population_size):
             r = random.choice(numbers)
             crossover_gene_1 = parent_gene [key_prefix3+str(r)]
             numbers.remove(r)
-            r = random.choice(numbers)
-            crossover_gene_2 = parent_gene [key_prefix3+str(r)]
-            print(crossover_gene_1)
-            print(crossover_gene_2)
-
+            s = random.choice(numbers)
+            crossover_gene_2 = parent_gene [key_prefix3+str(s)]
+            pt= random.randint(1,7)
+            crossover_gene_3 = crossover_gene_1[:pt] + crossover_gene_2[pt:]
+            crossover_gene_4 = crossover_gene_2[:pt] + crossover_gene_1[pt:]
+            parent_gene [key_prefix3+str(r)] = crossover_gene_3 
+            parent_gene [key_prefix3+str(s)] = crossover_gene_4
 
 main()
     
