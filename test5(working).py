@@ -25,6 +25,7 @@ def main():
     
 
     Lr = 2**L-1 #length of gene in binary
+    print("Lr",Lr)
     key_prefix="parent_"
     #key_prefix2="fit_"
 
