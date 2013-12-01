@@ -8,21 +8,20 @@ def main():
     parent_gene={}
     parent_fit=[]
     offspring_gene={}
-    global p
     p = 0
     Total_fitness = 0
     #insert length of the gene here
-    L = 10
+    L = 5
     #insert the population size here
-    Num = 10
+    Num = 5
     #insert number of parents here
-    Parents = 10
+    Parents = 5
     #insert number of generations here
     Overall_generations= 5
     #insert probability of crossover
     Crossover_chance=10
     #insert probability of mutation
-    mutation_chance=10
+    mutation_chance=100
     
 
     Lr = 2**L-1 #length of gene in binary
@@ -47,11 +46,12 @@ def main():
     #stating averege fitness
     Averege_fitness = Calculate_averege_fit (pool_fit, Num)
     print ('original averege fitness = ',Averege_fitness)
-    print('firstish combo',pool_gene)
+    print('first combo',pool_gene)
     
 
     for gen in range(0,Overall_generations) :
 
+        print('start comb',pool_gene)
         while p < Parents:
             parent_gene[key_prefix + str(p)] = roulette_wheel_selection(pool_gene,pool_fit,Num)
             current_parent = key_prefix + str(p)
@@ -64,16 +64,23 @@ def main():
 
         Averege_fitness = Calculate_averege_fit (parent_fit, Num)
         print ('child averege fitness = ',Averege_fitness)
-        print('starting combo',parent_gene)
+
+        print("offspring_geneb4=",parent_gene)
+        
         for i in range(0,Parents):
             current_mutant = key_prefix+str(i)
+            print("current_mutant",current_mutant)
+            print("offspring_geneb4=",parent_gene[current_mutant])
             offspring_gene[current_mutant] = Mutation(parent_gene,mutation_chance,i)
-        print('final combo',offspring_gene)
+            print("offspring_geneat=",offspring_gene[current_mutant])
+        print('final comb',offspring_gene)
         Crossover(offspring_gene,Crossover_chance,Num)
         p=0
         Averege_fitness=0
         Total_fitness=0
+        print("offspring=",offspring_gene)
         pool_gene=offspring_gene
+        print("pool_gene=",pool_gene)
         pool_fit=[]
         parent_fit=[]
         for fit in range(0,Num):
@@ -93,17 +100,15 @@ def convert_to_boolean_array(rand_num,length):
 def roulette_wheel_selection(pool_gene,pool_fit,Num):
     fitness_sum = 0
     key_prefix="person_"
-    global p
     for i in range(0, len(pool_fit)):
         fitness_sum = fitness_sum + pool_fit[i]
-    roulette_drop = random.randint(0,fitness_sum)
+    roulette_drop = random.randint(1,fitness_sum)
     i, fitness_sum = -1, 0
     while roulette_drop > fitness_sum:
         i=i+1
         fitness_sum = fitness_sum + pool_fit[i]
-    if (i==-1):
-        i=i+1
     chosen_parent = pool_gene [key_prefix+str(i)]
+
     return chosen_parent
         
     
@@ -133,7 +138,7 @@ def Crossover(parent_gene,Crossover_chance,population_size):
    key_prefix="person_"
    #gene_length = len(parent_gene)
    for x in range (1,population_size):
-        if(random.randint(0,100)<100):#replace 100 with Crossover_chance
+        if(random.randint(0,100)<Crossover_chance):#replace 100 with Crossover_chance
             numbers = list(map(int,range(1,population_size)))
             numbers.remove(x)
             r = random.choice(numbers)
