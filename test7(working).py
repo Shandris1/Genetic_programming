@@ -6,20 +6,21 @@ def main():
     
     pool_fit = []
     parent_fit = []
+    highest_fitness_total = 0
     p = 0
     Total_fitness = 0
     #insert length of the gene here
-    L = 3
+    L = 50
     #insert the population size here
-    Num = 3
+    Num = 50
     #insert number of parents here
-    Parents = 3
+    Parents = 50
     #insert number of generations here
-    Overall_generations = 3
+    Overall_generations = 50
     #insert probability of crossover
-    Crossover_chance = 10
+    Crossover_chance = 80
     #insert probability of mutation
-    mutation_chance = 0
+    mutation_chance = 1
     #populate the array with random binary number
     pool_gene = initialise_gene_pool(Num,L)
     for i in range(0,Num) :
@@ -45,6 +46,8 @@ def main():
         
         print("Total_fitness" ,Total_fitness)
         print("Averege_fitness" ,Averege_fitness)
+        highest_fitness_total = Total_fitness if Total_fitness > highest_fitness_total else highest_fitness_total
+        print("highest_fitness_total=",highest_fitness_total)
         p = 0
         Averege_fitness = 0
         Total_fitness = 0
@@ -59,22 +62,32 @@ def main():
 
 
 
-def initialise_gene_pool(Num,Length):
-    Lr = 2**Length-1
-    pool_gene={}
+def initialise_gene_pool(Num,length):
+    length_in_binary = 2**length-1
+    pool_gene = {}
 
     for i in range(0,Num) :
-        A = random.randint(0,Lr)
+        random_integer = random.randint(0,length_in_binary)
         #current_fit = key_prefix2+str(i)
-        pool_gene[i] = list(map(int,bin(A)[2:].zfill(Length)))
+        pool_gene[i] = list(map(int,bin(random_integer)[2:].zfill(length)))
     return pool_gene
+    """
+def initialise_gene_pool(pool_size = 2, gene_length = 2):
+    pool_gene = {}
+    for member in range(0,pool_size):
+        value_gene = list(range(gene_length))
+        for gene in range(0,gene_length):
+            value_gene[gene] = random.randint(0,1)
+        pool_gene[member] = value_gene
+    return pool_gene"""
+
 
 
 
 
 def roulette_wheel_selection(pool_gene,pool_fit,Num,Parents):
     
-    parent_gene={}
+    parent_gene = {}
     for x in range(0,Parents):
         fitness_sum = 0
         for i in range(0, len(pool_fit)):
@@ -82,9 +95,9 @@ def roulette_wheel_selection(pool_gene,pool_fit,Num,Parents):
         roulette_drop = random.randint(1,fitness_sum)
         i, fitness_sum = -1, 0
         while roulette_drop > fitness_sum:
-            i=i+1
+            i = i + 1
             fitness_sum = fitness_sum + pool_fit[i]
-        parent_gene[x] = pool_gene [i]
+        parent_gene[x] = list(pool_gene[i])
     return parent_gene
         
     
@@ -107,7 +120,7 @@ def Mutation(parent_gene,mutation_chance,population_size):
         for x in range (0, gene_length) :
             if (random.randint(0,99) < mutation_chance):
                 mutating_gene[x] = int(not mutating_gene[x])
-        mutant_gene[i] = mutating_gene
+        mutant_gene[i] = list(mutating_gene)
     return mutant_gene
 
 
@@ -127,8 +140,8 @@ def Crossover(mutant_gene,Crossover_chance,population_size):
             pt = random.randint(1,population_size-1)
             crossover_gene_3 = crossover_gene_1[:pt] + crossover_gene_2[pt:]
             crossover_gene_4 = crossover_gene_2[:pt] + crossover_gene_1[pt:]
-            mutant_gene [r] = crossover_gene_3 
-            mutant_gene [s] = crossover_gene_4
+            mutant_gene [r] = list(crossover_gene_3) 
+            mutant_gene [s] = list(crossover_gene_4)
     return mutant_gene
 
 main()
