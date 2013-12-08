@@ -1,6 +1,7 @@
 import random
 random.seed
 
+
 def main():
 
     
@@ -9,6 +10,8 @@ def main():
     highest_fitness_total = 0
     p = 0
     Total_fitness = 0
+
+    #Beginning of changibles__________________________
     #insert length of the gene here
     L = 50
     #insert the population size here
@@ -20,7 +23,9 @@ def main():
     #insert probability of crossover
     Crossover_chance = 80
     #insert probability of mutation
-    mutation_chance = 1
+    mutation_chance = 2
+
+    #end of chanibles_______________________________
     #populate the array with random binary number
     pool_gene = initialise_gene_pool(Num,L)
     for i in range(0,Num) :
@@ -33,6 +38,8 @@ def main():
     print("Total_fitness" ,Total_fitness)
     print("Averege_fitness" ,Averege_fitness)
 
+
+#Main loop of the function
     for gen in range(0,Overall_generations) :
         parent_gene = roulette_wheel_selection(pool_gene,pool_fit,Num,Parents)
         while p < Parents:
@@ -71,15 +78,6 @@ def initialise_gene_pool(Num,length):
         #current_fit = key_prefix2+str(i)
         pool_gene[i] = list(map(int,bin(random_integer)[2:].zfill(length)))
     return pool_gene
-    """
-def initialise_gene_pool(pool_size = 2, gene_length = 2):
-    pool_gene = {}
-    for member in range(0,pool_size):
-        value_gene = list(range(gene_length))
-        for gene in range(0,gene_length):
-            value_gene[gene] = random.randint(0,1)
-        pool_gene[member] = value_gene
-    return pool_gene"""
 
 
 
@@ -127,21 +125,30 @@ def Mutation(parent_gene,mutation_chance,population_size):
 def Crossover(mutant_gene,Crossover_chance,population_size):
 
 
+
     #gene_length = len(mutant_gene)
-    for x in range (1,population_size):
+    crossover_times=population_size
+    if (crossover_times%2==0):
+        crossover_times=int((crossover_times/2))
+        population_size_crossover=population_size
+    else:
+        crossover_times=int((crossover_times-1)/2)
+        population_size_crossover=population_size-1
+    numbers = list(map(int,range(1,population_size_crossover)))
+    for x in range(1,crossover_times):
         if(random.randint(0,99)<Crossover_chance):#replace 100 with Crossover_chance
-            numbers = list(map(int,range(1,population_size)))
-            numbers.remove(x)
             r = random.choice(numbers)
-            crossover_gene_1 = mutant_gene[r]
             numbers.remove(r)
+            crossover_gene_1 = mutant_gene[r]
             s = random.choice(numbers)
+            numbers.remove(s)
             crossover_gene_2 = mutant_gene[s]
             pt = random.randint(1,population_size-1)
             crossover_gene_3 = crossover_gene_1[:pt] + crossover_gene_2[pt:]
             crossover_gene_4 = crossover_gene_2[:pt] + crossover_gene_1[pt:]
             mutant_gene [r] = list(crossover_gene_3) 
             mutant_gene [s] = list(crossover_gene_4)
+
     return mutant_gene
 
 main()
