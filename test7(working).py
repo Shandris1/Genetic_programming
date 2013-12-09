@@ -26,8 +26,7 @@ def main():
     #populate the array with random binary number
     pool_gene = initialise_gene_pool(Num,L)
     for i in range(0,Num) :
-        temp15 = sum (pool_gene[i])
-        pool_fit.append(temp15)
+        pool_fit.append(sum (pool_gene[i]))
         print ('this parent\'s fitness = ',pool_fit[i])
     Total_fitness = sum(pool_fit)
     Averege_fitness = Calculate_averege_fit (pool_fit, Num)
@@ -37,11 +36,10 @@ def main():
 #Main loop of the function
     for gen in range(0,Overall_generations) :
         top_fitness_member = find_top_fitness(pool_gene,top_fitness_member)
-        parent_gene = roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,top_fitness_member)
-        while p < Parents:
-            temp16 = sum (parent_gene[p])
-            parent_fit.append(temp16)
-            p=p+1
+        #parent_gene = roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,top_fitness_member)
+        parent_gene = tournament_selection(pool_gene,pool_fit,Num,Parents,top_fitness_member)
+        for p in range(0,Parents):
+            parent_fit.append(sum (parent_gene[p]))
         Total_fitness = sum(parent_fit)
         Averege_fitness = Calculate_averege_fit (parent_fit, Num)
         mutant_gene=Mutation(parent_gene,mutation_chance,Num)
@@ -59,8 +57,7 @@ def main():
         pool_fit = []
         parent_fit = []
         for fit in range(0,Num):
-            temp16 = sum (parent_gene[fit])
-            pool_fit.append(temp16)
+            pool_fit.append(sum (parent_gene[fit]))
 
 
 def initialise_gene_pool(Num,length):
@@ -102,6 +99,29 @@ def roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,Best_member):
             fitness_sum = fitness_sum + pool_fit[i]
         parent_gene[x] = list(pool_gene[i])
     parent_gene[0] = list(Best_member[0])
+    return parent_gene
+
+def tournament_selection(pool_gene,pool_fit,Num,Parents,Best_member):
+    parent_gene= {}
+    top_fitness_member_tournament={}
+    for population in range (0,Num):
+        tournament_temp = {}
+        numbers = list(map(int,range(0,Num)))
+        for x in range (0,10):
+            r = random.choice(numbers)
+            tournament_temp[x]=list(pool_gene[r])
+
+            numbers.remove(r)
+        top_fitness_member_tournament[0] = list(pool_gene[r])
+        top_fitness_member_tournament = find_top_fitness(tournament_temp,top_fitness_member_tournament)
+        parent_gene[population] = list (top_fitness_member_tournament[0])
+        top_fitness_member_tournament = [r]
+
+
+
+
+
+
     return parent_gene
         
     
