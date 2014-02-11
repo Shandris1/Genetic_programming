@@ -21,7 +21,7 @@ def main():
     #insert probability of crossover
     Crossover_chance = 90
     #insert probability of mutation
-    mutation_chance = 1
+    mutation_chance = 2
     #end of chanibles_______________________________
     #populate the array with random binary number
     pool_gene = initialise_gene_pool(Num,L)
@@ -44,11 +44,11 @@ def main():
         Averege_fitness = Calculate_averege_fit (parent_fit, Num)
         mutant_gene=Mutation(parent_gene,mutation_chance,Num)
         crossed_gene=Crossover(mutant_gene,Crossover_chance,Num)
-        print("Total_fitness" ,Total_fitness)
-        print("Averege_fitness" ,Averege_fitness)
+        print("        Total_fitness=" ,Total_fitness)
+        print("      Averege_fitness=" ,Averege_fitness)
         highest_fitness_total = Total_fitness if Total_fitness > highest_fitness_total else highest_fitness_total
         print("highest_fitness_total=",highest_fitness_total)
-        print("highest_member_total= ",sum(top_fitness_member[0]))
+        print(" highest_member_total= ",sum(top_fitness_member[0]))
         if sum(top_fitness_member[0])==L:
             print("success! generations used =",gen)
             break
@@ -85,7 +85,7 @@ def find_top_fitness(pool_gene,top_fitness_member):
         top_fitness_member_current[0] = list(top_fitness_member[0])
     return top_fitness_member_current
 
-
+"""
 def roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,Best_member):
     parent_gene = {}
     for x in range(0,Parents):
@@ -100,6 +100,7 @@ def roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,Best_member):
         parent_gene[x] = list(pool_gene[i])
     parent_gene[0] = list(Best_member[0])
     return parent_gene
+"""
 
 def tournament_selection(pool_gene,pool_fit,Num,Parents,Best_member):
     parent_gene= {}
@@ -116,12 +117,6 @@ def tournament_selection(pool_gene,pool_fit,Num,Parents,Best_member):
         top_fitness_member_tournament = find_top_fitness(tournament_temp,top_fitness_member_tournament)
         parent_gene[population] = list (top_fitness_member_tournament[0])
         top_fitness_member_tournament = [r]
-
-
-
-
-
-
     return parent_gene
         
     
