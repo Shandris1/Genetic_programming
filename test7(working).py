@@ -24,6 +24,7 @@ def main():
     mutation_chance = 2
     #end of chanibles_______________________________
     #populate the array with random binary number
+    #replace pool fit and intergrate it into pool_gene
     pool_gene = initialise_gene_pool(Num,L)
     for i in range(0,Num) :
         pool_fit.append(sum (pool_gene[i]))
