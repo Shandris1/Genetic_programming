@@ -26,7 +26,16 @@ def split_list(input_list):
 	testing_list = input_list[:length]
 	return (learning_list,testing_list)
 
+def fitness_check(input_list, tested_list, rules):
+	for n in xrange(0,len(input_list)):
+		
+		pass
+	
+	pass
 
+def output_check(input_list,tested_list,rules):
+	
+	pass
 
 
 main()
