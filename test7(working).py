@@ -1,5 +1,6 @@
 import random
 random.seed
+import re
 
 
 def main():
