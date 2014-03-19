@@ -17,9 +17,9 @@ def main():
     #insert length of the gene here
     L = 5
     #insert the population size here
-    Num = 5
+    Num = 15
     #insert number of parents here
-    Parents = 5
+    Parents = 15
     #insert number of generations here
     Overall_generations = 500
     #insert probability of crossover
@@ -65,7 +65,7 @@ def main():
 
         pool_gene = crossed_gene
         pool_gene = fitness_check (pool_gene,learning_list)
-        #print(pool_gene)
+        pp.pprint(pool_gene)
         for i in range(0,len(pool_gene)):
             Total_fitness += pool_gene[i][2]
         Averege_fitness = Calculate_averege_fit (pool_gene, Num)
@@ -74,6 +74,7 @@ def main():
         highest_fitness_total = Total_fitness if Total_fitness > highest_fitness_total else highest_fitness_total
         print("highest_fitness_total=",highest_fitness_total)
         print(" highest_member_total= ",top_fitness_member[2])
+        print("top_fitness_member = ", top_fitness_member)
         if top_fitness_member[0][2]==L:
             print("success! generations used =",gen)
             break
@@ -84,7 +85,8 @@ def main():
             #pool_fit.append(sum (parent_gene[fit]))
 
 
-
+#This function opens the file at "filepath",removes the first line , and randomly splits it into two randomly
+#shuffled lists, one used for learning, and one for testing.
 def grab_file(filepath):
     with open(filepath, newline='') as inputfile:
         results = list(csv.reader(inputfile, delimiter=' ', quotechar='|'))
@@ -95,38 +97,60 @@ def grab_file(filepath):
 
     return(learning_list,testing_list)
 
+
+#This function takes a single input list, cuts it in half and and assigns 1/2 of the values into each one
 def split_list(input_list):
-    length =len (input_list)
-    length = int(length/2)
-    learning_list = input_list[length:]
-    testing_list = input_list[:length]
+    length =len (input_list) # determine the length of input_list
+    length = int(length/2) 
+    learning_list = input_list[length:] # assign the first half of the list to learning_list
+    testing_list = input_list[:length] # assigns the second half to testing_list
     return (learning_list,testing_list)
 
-
+#This function checks the fitness of the rules against the list
 def fitness_check(rules, input_list):
     for i in range(0,len(rules)):
         fitness = 0      
+        H_number = 0
         rule_string = ''.join(rules[i][0])
         #print("list=",input_list)
+        H_number = 0
+        for point in range(0,len(rules[0][0])):#-1 to fitness for having #
+            if rules[i][0][point] == '[01]':
+                H_number += 1
+            #print("h_number", H_number)
+            #print("rules =", rules[i][0])
+            if H_number == 5:
+                fitness -=1000
+            if H_number == 4:
+                fitness -=30
+            if H_number ==3:
+                fitness -=5
+
         for data in input_list:
             #print("rule string/datastring",rule_string,data[0])
-            if re.match(rule_string,data[0]):
-                fitness += 1
-                if rule_string[1] == data[1]:
-                    fitness += 1
-            rules[i][2]=fitness
+            if re.match(rule_string,data[0]):#+1 to fitness for matching every part of the rule
+                fitness += 5
+                if int(rules[i][1]) == int(data[1]):#+1 to fitness for exactly matching the result
+                    fitness += 50
+                else:
+                    fitness -= 50 #-1 to fitness for not matching result
+            if (fitness>0):
+                rules[i][2]=fitness
+            else:
+                rules[i][2]=0
+
         #print("rules = ", rules)
+    #print("rule_string =", rules)
     return rules
 
 def initialise_rule_pool(rule_input_length,rule_length):
-    rule_set = []
     value_member = []
     for member in range(0,rule_input_length):
         value_rule = list(range(rule_length))
         for rule in range(0,rule_length):
             value_rule[rule] = random.choice(['0','1','[01]'])
         value_fitness = 0
-        value_member.append([value_rule,random.choice([0,1]),value_fitness])
+        value_member.append([value_rule,1,value_fitness])#change second argument for result "random.choice([0,1])""
 
     return value_member
 
@@ -187,7 +211,7 @@ def Calculate_averege_fit(pool_fit,Size_of_population):
     Averege_fitness = Total_fitness/Size_of_population
     return Averege_fitness
 
-# 
+
 def Mutation(parent_gene,mutation_chance,population_size):
 
     gene_length = 0 
@@ -222,11 +246,11 @@ def Crossover(mutant_gene,Crossover_chance,population_size):
             r = random.choice(numbers)
             numbers.remove(r)
             #print("r",r)
-            crossover_gene_1 = mutant_gene[r]
+            crossover_gene_1 = mutant_gene[r][0]
             s = random.choice(numbers)
             numbers.remove(s)
             #print("s",s)
-            crossover_gene_2 = mutant_gene[s]
+            crossover_gene_2 = mutant_gene[s][0]
             pt = random.randint(1,population_size-1)
             #print("crossover_gene_1",crossover_gene_1)
             #print("crossover_gene_2",crossover_gene_2)
@@ -234,8 +258,10 @@ def Crossover(mutant_gene,Crossover_chance,population_size):
             crossover_gene_4 = crossover_gene_2[:pt] + crossover_gene_1[pt:]
             #print("crossover_gene_3",crossover_gene_3)
             #print("crossover_gene_4",crossover_gene_4)
-            mutant_gene [r] = list(crossover_gene_3) 
-            mutant_gene [s] = list(crossover_gene_4)
+            mutant_gene [r][0] = list(crossover_gene_3) 
+            mutant_gene [s][0] = list(crossover_gene_4)
+            #print ("mutant_gene", mutant_gene[r])
+            #mutant_gene.append([parent_gene[r][1],parent_gene[i][2]])
     return mutant_gene
 
 
