@@ -83,16 +83,6 @@ def main():
         #for fit in range(0,Num):
             #pool_fit.append(sum (parent_gene[fit]))
 
-"""
-def initialise_gene_pool(Num,length):
-    length_in_binary = 2**length-1
-    pool_gene = {}
-    for i in range(0,Num) :
-        random_integer = random.randint(0,length_in_binary)
-        #current_fit = key_prefix2+str(i)
-        pool_gene[i] = list(map(int,bin(random_integer)[2:].zfill(length)))
-    return pool_gene"""
-
 
 
 def grab_file(filepath):
@@ -127,30 +117,7 @@ def fitness_check(rules, input_list):
             rules[i][2]=fitness
         #print("rules = ", rules)
     return rules
-    """
-        mutating_gene = parent_gene[i]
-        gene_length = len(mutating_gene[0])
-        for x in range (0, gene_length) :
-            if (random.randint(0,99) < mutation_chance):
-                mutating_gene[0][x] = random.choice(['0','1','[01]'])
-    for key, member in rules.items():
-        fitness = 0
-        #print ("rule_string", rules)
-        rule_string = ''.join(member['rule'])
-        #print ("rule_string2", rule_string)
-        for data in input_list:
-            if re.match(rule_string, data[0]):
-                fitness += 1
-                if member['result'] == data[1]:
-                    fitness += 1
-        rules[key]['fitness'] = fitness
-    return rules"""
-"""
-def fitness_check(rules,input_list):
-    for x in range(0,len(rules)):
-        rules[x][2] = random.randint(0,16)
-    return rules
-"""
+
 def initialise_rule_pool(rule_input_length,rule_length):
     rule_set = []
     value_member = []
@@ -160,27 +127,8 @@ def initialise_rule_pool(rule_input_length,rule_length):
             value_rule[rule] = random.choice(['0','1','[01]'])
         value_fitness = 0
         value_member.append([value_rule,random.choice([0,1]),value_fitness])
-        #value_member[member][1] = 
-        #value_member[member][2] =
-        #rule_set[] = value_member
-    #print (value_member)
-    return value_member
 
-"""
-def initialise_rule_pool(rule_input_length,rule_length):
-    rule_set = {}
-    for member in range(0,rule_input_length):
-        value_rule = list(range(rule_length))
-        value_member = {}
-        for rule in range(0,rule_length):
-            value_rule[rule] = random.choice(['0','1','[01]'])
-        value_fitness = 0
-        value_member["rule"] = value_rule
-        value_member["result"] = random.choice([0,1])
-        value_member["fitness"] = value_fitness
-        rule_set[member] = value_member
-    return rule_set
-"""
+    return value_member
 
 def find_top_fitness(pool_gene,top_fitness_member):
     pool_fit = []
@@ -257,48 +205,6 @@ def Mutation(parent_gene,mutation_chance,population_size):
         mutant_gene_pool.append([mutant_gene,parent_gene[i][1],parent_gene[i][2]])
     #print("mutant_gene",mutant_gene)
     return mutant_gene_pool
-
-# def Mutation(parent_gene,mutation_chance,population_size):
-#     mutant_gene = []
-#     gene_length = 0 
-#     #print("parent_gene", parent_gene)
-#     for i in range(0,population_size):            
-#         gene_length = len(parent_gene[i][0])
-#         for x in range (0, gene_length) :
-#             if (random.randint(0,99) < mutation_chance):
-#                 mutant_gene[i][0][x] = random.choice(['0','1','[01]'])
-
-#     #print("parent_gene",mutant_gene)
-#     return mutant_gene_pool
-
-# def mutation(children_gene, mutation_rate):
-#     mutated_gene = list(children_gene)
-#     pool_size=len(children_gene)
-#     gene_length=len(children_gene[0][0])
-#     for member in range(0,pool_size):
-#         mutated_gene_list = list(range(gene_length))
-#         for gene in range (0,gene_length):
-#             if random.random() < mutation_rate: #random.random returns a float between 0 and 1
-#                 gene_choice=["0","1","[01]"]
-#                 gene_choice.remove(children_gene[member][0][gene])
-#                 mutated_gene_list[gene] = random.choice(gene_choice) #chooses a random new gene that is not the original
-#             else:
-#                 mutated_gene_list[gene] = children_gene[member][0][gene] #leaves gene the same
-#         mutated_gene[member][0] = mutated_gene_list
-#     return mutated_gene
-# """
-# def Mutation(parent_gene,mutation_chance,population_size):
-#     gene_length = 0 
-#     mutant_gene = {}
-#     for i in range(0,population_size):            
-#         mutating_gene = [] 
-#         mutating_gene = parent_gene[i]
-#         gene_length = len(mutating_gene)
-#         for x in range (0, gene_length) :
-#             if (random.randint(0,99) < mutation_chance):
-#                 mutating_gene[x] = int(not mutating_gene[x])
-#         mutant_gene[i] = list(mutating_gene)
-#     return mutant_gene"""
 
 def Crossover(mutant_gene,Crossover_chance,population_size):
     #gene_length = len(mutant_gene)
