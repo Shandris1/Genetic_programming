@@ -17,70 +17,79 @@ def main():
     #insert length of the gene here
     L = 5
     #insert the population size here
-    Num = 15
+    Num = 50
     #insert number of parents here
-    Parents = 15
+    Parents = 50
     #insert number of generations here
-    Overall_generations = 500
+    Overall_generations = 70
     #insert probability of crossover
     Crossover_chance = 90
     #insert probability of mutation
     mutation_chance = 10
-    #end of chanibles_______________________________
+    #Number of rules to evolve
+    Rule_ammount = 15
+    #end of chanibles______________________________
+    saved_rules = []
+    solution = []
     #populate the array with random binary number
     #replace pool fit and intergrate it into pool_gene
 
     learning_list,testing_list = grab_file ('n:/data1.txt')
 
-    pool_gene = initialise_rule_pool(Num,L)
-    #pp.pprint(pool_gene)
-    pool_gene = fitness_check (pool_gene,learning_list)
-    #for i in range(0,Num) :
-    #    pool_fit.append(sum (pool_gene[i][0]))
-    #    print ('this parent\'s fitness = ',pool_fit[i])
-    for i in range(0,len(pool_gene)):
-        Total_fitness += pool_gene[i][2]
-    Averege_fitness = Calculate_averege_fit (pool_gene, Num)
-    #print ("pool_gene",pool_gene)
-    top_fitness_member = pool_gene[0]
-    #print("Total_fitness" ,Total_fitness)
-    #print("Averege_fitness" ,Averege_fitness)
-#Main loop of the function
-    for gen in range(0,Overall_generations) :
-        top_fitness_member = find_top_fitness(pool_gene,top_fitness_member)
-        parent_gene = roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,top_fitness_member)
-        #print("parent_gene = ", parent_gene)
-        #parent_gene = tournament_selection(pool_gene[0],pool_fit,Num,Parents,top_fitness_member)
-        #for p in range(0,Parents):
-        #    parent_fit.append(sum (parent_gene[p][0]))
-        #Total_fitness = sum(parent_gene[p][0])
-        #Averege_fitness = Calculate_averege_fit (parent_fit, Num)
-        #print("parent_gene",parent_gene)
-        mutant_gene=Mutation(parent_gene,mutation_chance,Num)
-        #print("parent_gene",parent_gene)
-        #print("mutation   ",mutant_gene)
-        crossed_gene=Crossover(mutant_gene,Crossover_chance,Num)
-        
-        
-
-        pool_gene = crossed_gene
-        pool_gene = fitness_check (pool_gene,learning_list)
-        pp.pprint(pool_gene)
+    for iterations in range(0,Rule_ammount):
+        pool_gene = initialise_rule_pool(Num,L)
+        #pp.pprint(pool_gene)
+        pool_gene = fitness_check (pool_gene,learning_list,saved_rules)
+        #for i in range(0,Num) :
+        #    pool_fit.append(sum (pool_gene[i][0]))
+        #    print ('this parent\'s fitness = ',pool_fit[i])
         for i in range(0,len(pool_gene)):
             Total_fitness += pool_gene[i][2]
         Averege_fitness = Calculate_averege_fit (pool_gene, Num)
-        print("        Total_fitness=" ,Total_fitness)
-        print("      Averege_fitness=" ,Averege_fitness)
-        highest_fitness_total = Total_fitness if Total_fitness > highest_fitness_total else highest_fitness_total
-        print("highest_fitness_total=",highest_fitness_total)
-        print(" highest_member_total= ",top_fitness_member[2])
-        print("top_fitness_member = ", top_fitness_member)
-        if top_fitness_member[0][2]==L:
-            print("success! generations used =",gen)
-            break
-        p, Averege_fitness, Total_fitness = 0,0,0
-        pool_fit = []
-        parent_fit = []
+        #print ("pool_gene",pool_gene)
+        top_fitness_member = pool_gene[0]
+        #print("Total_fitness" ,Total_fitness)
+        #print("Averege_fitness" ,Averege_fitness)
+    #Main loop of the function
+        for gen in range(0,Overall_generations) :
+            top_fitness_member = find_top_fitness(pool_gene,top_fitness_member)
+            parent_gene = roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,top_fitness_member)
+            #print("parent_gene = ", parent_gene)
+            #parent_gene = tournament_selection(pool_gene[0],pool_fit,Num,Parents,top_fitness_member)
+            #for p in range(0,Parents):
+            #    parent_fit.append(sum (parent_gene[p][0]))
+            #Total_fitness = sum(parent_gene[p][0])
+            #Averege_fitness = Calculate_averege_fit (parent_fit, Num)
+            #print("parent_gene",parent_gene)
+            mutant_gene=Mutation(parent_gene,mutation_chance,Num)
+            #print("parent_gene",parent_gene)
+            #print("mutation   ",mutant_gene)
+            crossed_gene=Crossover(mutant_gene,Crossover_chance,Num)
+            
+            
+
+            pool_gene = crossed_gene
+            pool_gene = fitness_check (pool_gene,learning_list,saved_rules)
+            pp.pprint(pool_gene)
+            for i in range(0,len(pool_gene)):
+                Total_fitness += pool_gene[i][2]
+            Averege_fitness = Calculate_averege_fit (pool_gene, Num)
+            print("        Total_fitness=" ,Total_fitness)
+            print("      Averege_fitness=" ,Averege_fitness)
+            highest_fitness_total = Total_fitness if Total_fitness > highest_fitness_total else highest_fitness_total
+            print("highest_fitness_total=",highest_fitness_total)
+            print(" highest_member_total= ",top_fitness_member[2])
+            print("top_fitness_member = ", top_fitness_member)
+            if top_fitness_member[0][2]==L:
+                print("success! generations used =",gen)
+                break
+            p, Averege_fitness, Total_fitness = 0,0,0
+            pool_fit = []
+        saved_rules.append(top_fitness_member)
+        top_fitness_member = []
+    print("Solution:",saved_rules)
+    solution = rules_test(saved_rules,testing_list)
+
         #for fit in range(0,Num):
             #pool_fit.append(sum (parent_gene[fit]))
 
@@ -97,6 +106,28 @@ def grab_file(filepath):
 
     return(learning_list,testing_list)
 
+def rules_test(rules,input_list):
+    for i in range(0,len(rules)):
+        fitness = 0      
+        rule_string = ''.join(rules[i][0])
+        #print("list=",input_list)
+
+        
+        for data in input_list:
+            #print("rule string/datastring",rule_string,data[0])
+            works_for_rule = 0
+            if re.match(rule_string,data[0]):#+1 to fitness for matching every part of the rule
+                if int(rules[i][1]) == int(data[1]):#+1 to fitness for exactly matching the result
+                    fitness += 1
+                    print("it works")
+                else:
+                    fitness -= 0 #-1 to fitness for not matching result
+            if (fitness>0):
+                rules[i][2]=fitness
+            else:
+                rules[i][2]=fitness
+    print("the fitness of the solution = ",rules)
+    return rules
 
 #This function takes a single input list, cuts it in half and and assigns 1/2 of the values into each one
 def split_list(input_list):
@@ -107,13 +138,18 @@ def split_list(input_list):
     return (learning_list,testing_list)
 
 #This function checks the fitness of the rules against the list
-def fitness_check(rules, input_list):
+def fitness_check(rules, input_list,saved_rules):
+    redundancy_test = len(saved_rules)
     for i in range(0,len(rules)):
         fitness = 0      
-        H_number = 0
+        H_number = 0#H number represents the number of #. some are wanted, but over 3 are unlikely to use useful rules, 
+        #therefore logarithmic decrease in fitness is applied
         rule_string = ''.join(rules[i][0])
         #print("list=",input_list)
         H_number = 0
+        for iteration in range(0,redundancy_test):
+            if rules[i][0] == saved_rules[iteration][0]: #If identical rule exists, penalise fitness
+                fitness -=1000
         for point in range(0,len(rules[0][0])):#-1 to fitness for having #
             if rules[i][0][point] == '[01]':
                 H_number += 1
@@ -133,7 +169,7 @@ def fitness_check(rules, input_list):
                 if int(rules[i][1]) == int(data[1]):#+1 to fitness for exactly matching the result
                     fitness += 50
                 else:
-                    fitness -= 50 #-1 to fitness for not matching result
+                    fitness -= 100 #-1 to fitness for not matching result
             if (fitness>0):
                 rules[i][2]=fitness
             else:
@@ -263,6 +299,8 @@ def Crossover(mutant_gene,Crossover_chance,population_size):
             #print ("mutant_gene", mutant_gene[r])
             #mutant_gene.append([parent_gene[r][1],parent_gene[i][2]])
     return mutant_gene
+
+
 
 
 main()
