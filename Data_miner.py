@@ -25,7 +25,7 @@ def main():
     #insert probability of crossover
     Crossover_chance = 90
     #insert probability of mutation
-    mutation_chance = 40
+    mutation_chance = 10
     #end of chanibles_______________________________
     #populate the array with random binary number
     #replace pool fit and intergrate it into pool_gene
@@ -33,7 +33,7 @@ def main():
     learning_list,testing_list = grab_file ('n:/data1.txt')
 
     pool_gene = initialise_rule_pool(Num,L)
-    pp.pprint(pool_gene)
+    #pp.pprint(pool_gene)
     pool_gene = fitness_check (pool_gene,learning_list)
     #for i in range(0,Num) :
     #    pool_fit.append(sum (pool_gene[i][0]))
@@ -41,27 +41,31 @@ def main():
     for i in range(0,len(pool_gene)):
         Total_fitness += pool_gene[i][2]
     Averege_fitness = Calculate_averege_fit (pool_gene, Num)
-    print ("pool_gene",pool_gene)
+    #print ("pool_gene",pool_gene)
     top_fitness_member = pool_gene[0]
-    print("Total_fitness" ,Total_fitness)
-    print("Averege_fitness" ,Averege_fitness)
+    #print("Total_fitness" ,Total_fitness)
+    #print("Averege_fitness" ,Averege_fitness)
 #Main loop of the function
     for gen in range(0,Overall_generations) :
         top_fitness_member = find_top_fitness(pool_gene,top_fitness_member)
         parent_gene = roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,top_fitness_member)
-        print("parent_gene = ", parent_gene)
+        #print("parent_gene = ", parent_gene)
         #parent_gene = tournament_selection(pool_gene[0],pool_fit,Num,Parents,top_fitness_member)
         #for p in range(0,Parents):
         #    parent_fit.append(sum (parent_gene[p][0]))
         #Total_fitness = sum(parent_gene[p][0])
-        Averege_fitness = Calculate_averege_fit (parent_fit, Num)
+        #Averege_fitness = Calculate_averege_fit (parent_fit, Num)
+        #print("parent_gene",parent_gene)
         mutant_gene=Mutation(parent_gene,mutation_chance,Num)
+        #print("parent_gene",parent_gene)
+        #print("mutation   ",mutant_gene)
         crossed_gene=Crossover(mutant_gene,Crossover_chance,Num)
         
         
 
         pool_gene = crossed_gene
-        pool_gene = fitness_check (pool_gene,1)
+        pool_gene = fitness_check (pool_gene,learning_list)
+        #print(pool_gene)
         for i in range(0,len(pool_gene)):
             Total_fitness += pool_gene[i][2]
         Averege_fitness = Calculate_averege_fit (pool_gene, Num)
@@ -69,7 +73,7 @@ def main():
         print("      Averege_fitness=" ,Averege_fitness)
         highest_fitness_total = Total_fitness if Total_fitness > highest_fitness_total else highest_fitness_total
         print("highest_fitness_total=",highest_fitness_total)
-        print(" highest_member_total= ",top_fitness_member[0][2])
+        print(" highest_member_total= ",top_fitness_member[2])
         if top_fitness_member[0][2]==L:
             print("success! generations used =",gen)
             break
@@ -113,15 +117,15 @@ def fitness_check(rules, input_list):
     for i in range(0,len(rules)):
         fitness = 0      
         rule_string = ''.join(rules[i][0])
-        print("list=",rule_string)
+        #print("list=",input_list)
         for data in input_list:
-            print("rule string/datastring",rule_string,data[0])
+            #print("rule string/datastring",rule_string,data[0])
             if re.match(rule_string,data[0]):
                 fitness += 1
                 if rule_string[1] == data[1]:
                     fitness += 1
             rules[i][2]=fitness
-        print("rules = ", rules)
+        #print("rules = ", rules)
     return rules
     """
         mutating_gene = parent_gene[i]
@@ -159,7 +163,7 @@ def initialise_rule_pool(rule_input_length,rule_length):
         #value_member[member][1] = 
         #value_member[member][2] =
         #rule_set[] = value_member
-    print (value_member)
+    #print (value_member)
     return value_member
 
 """
@@ -199,6 +203,7 @@ def roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,Best_member):
         fitness_sum = 0
         for i in range(0, len(pool_gene)):
             fitness_sum += pool_gene[i][2]
+        #print("fitness_sum",pool_gene)
         roulette_drop = random.randint(1,fitness_sum)
         i, fitness_sum = -1, 0
         while roulette_drop > fitness_sum:
@@ -234,26 +239,70 @@ def Calculate_averege_fit(pool_fit,Size_of_population):
     Averege_fitness = Total_fitness/Size_of_population
     return Averege_fitness
 
-
+# 
 def Mutation(parent_gene,mutation_chance,population_size):
+
     gene_length = 0 
-    mutant_gene = []
-    print("parent_gene", parent_gene)
+    mutant_gene_pool = []
+    #print("parent_gene", parent_gene)
     for i in range(0,population_size):            
-        mutating_gene = [] 
-        mutating_gene = parent_gene[i]
-        gene_length = len(mutating_gene[0])
+        mutant_gene = [] 
+        gene_length = len(parent_gene[0][0])
         for x in range (0, gene_length) :
             if (random.randint(0,99) < mutation_chance):
-                mutating_gene[0][x] = random.choice(['0','1','[01]'])
-        mutant_gene.append(mutating_gene)
-    print("mutant_gene",mutant_gene)
-    return mutant_gene
+                mutant_gene.append(random.choice(['0','1','[01]']))
+            else:
+                mutant_gene.append(parent_gene[i][0][x])
+        #mutant_gene_pool_temp=[mutant_gene,parent_gene[i][1],parent_gene[i][2]]
+        mutant_gene_pool.append([mutant_gene,parent_gene[i][1],parent_gene[i][2]])
+    #print("mutant_gene",mutant_gene)
+    return mutant_gene_pool
 
+# def Mutation(parent_gene,mutation_chance,population_size):
+#     mutant_gene = []
+#     gene_length = 0 
+#     #print("parent_gene", parent_gene)
+#     for i in range(0,population_size):            
+#         gene_length = len(parent_gene[i][0])
+#         for x in range (0, gene_length) :
+#             if (random.randint(0,99) < mutation_chance):
+#                 mutant_gene[i][0][x] = random.choice(['0','1','[01]'])
+
+#     #print("parent_gene",mutant_gene)
+#     return mutant_gene_pool
+
+# def mutation(children_gene, mutation_rate):
+#     mutated_gene = list(children_gene)
+#     pool_size=len(children_gene)
+#     gene_length=len(children_gene[0][0])
+#     for member in range(0,pool_size):
+#         mutated_gene_list = list(range(gene_length))
+#         for gene in range (0,gene_length):
+#             if random.random() < mutation_rate: #random.random returns a float between 0 and 1
+#                 gene_choice=["0","1","[01]"]
+#                 gene_choice.remove(children_gene[member][0][gene])
+#                 mutated_gene_list[gene] = random.choice(gene_choice) #chooses a random new gene that is not the original
+#             else:
+#                 mutated_gene_list[gene] = children_gene[member][0][gene] #leaves gene the same
+#         mutated_gene[member][0] = mutated_gene_list
+#     return mutated_gene
+# """
+# def Mutation(parent_gene,mutation_chance,population_size):
+#     gene_length = 0 
+#     mutant_gene = {}
+#     for i in range(0,population_size):            
+#         mutating_gene = [] 
+#         mutating_gene = parent_gene[i]
+#         gene_length = len(mutating_gene)
+#         for x in range (0, gene_length) :
+#             if (random.randint(0,99) < mutation_chance):
+#                 mutating_gene[x] = int(not mutating_gene[x])
+#         mutant_gene[i] = list(mutating_gene)
+#     return mutant_gene"""
 
 def Crossover(mutant_gene,Crossover_chance,population_size):
     #gene_length = len(mutant_gene)
-    print("crossover_gene",mutant_gene)
+    #print("crossover_gene",mutant_gene)
     crossover_times=population_size
     if (crossover_times%2==0):
         crossover_times=int((crossover_times/2))
@@ -266,11 +315,11 @@ def Crossover(mutant_gene,Crossover_chance,population_size):
         if(random.randint(0,99)<Crossover_chance):
             r = random.choice(numbers)
             numbers.remove(r)
-            print("r",r)
+            #print("r",r)
             crossover_gene_1 = mutant_gene[r]
             s = random.choice(numbers)
             numbers.remove(s)
-            print("s",s)
+            #print("s",s)
             crossover_gene_2 = mutant_gene[s]
             pt = random.randint(1,population_size-1)
             #print("crossover_gene_1",crossover_gene_1)
