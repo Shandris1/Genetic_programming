@@ -86,9 +86,9 @@ def split_list(input_list):
 def fitness_check(rules, input_list):
 	for key, member in rules.items():
 		fitness = 0
-		#print ("rule_string", rules)
+		print ("rule_string", rules)
 		rule_string = ''.join(member['rule'])
-		#print ("rule_string2", rule_string)
+		print ("rule_string2", rule_string)
 		for data in input_list:
 			if re.match(rule_string, data[0]):
 				fitness += 1
@@ -179,7 +179,7 @@ def Mutation(parent_gene,mutation_chance,population_size):
 	#print ("end of mutaton = ",mutated_gene)
 	return mutated_gene
 
-	
+
 
 def mutation(children_gene, mutation_rate):
 	mutated_gene = dict(children_gene)

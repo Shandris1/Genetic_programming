@@ -2,6 +2,7 @@ import random
 random.seed
 import re
 import pprint
+import csv
 
 
 def main():
@@ -28,9 +29,12 @@ def main():
     #end of chanibles_______________________________
     #populate the array with random binary number
     #replace pool fit and intergrate it into pool_gene
+
+    learning_list,testing_list = grab_file ('n:/data1.txt')
+
     pool_gene = initialise_rule_pool(Num,L)
     pp.pprint(pool_gene)
-    pool_gene = fitness_check (pool_gene,1)
+    pool_gene = fitness_check (pool_gene,learning_list)
     #for i in range(0,Num) :
     #    pool_fit.append(sum (pool_gene[i][0]))
     #    print ('this parent\'s fitness = ',pool_fit[i])
@@ -85,8 +89,46 @@ def initialise_gene_pool(Num,length):
         pool_gene[i] = list(map(int,bin(random_integer)[2:].zfill(length)))
     return pool_gene"""
 
+
+
+def grab_file(filepath):
+    with open(filepath, newline='') as inputfile:
+        results = list(csv.reader(inputfile, delimiter=' ', quotechar='|'))
+        #results.remove ('32 rows x 5 variables (+ class', ' space separated', ' CR EOL)')
+        del results[0]
+        random.shuffle (results)
+        learning_list,testing_list=split_list(results)
+
+    return(learning_list,testing_list)
+
+def split_list(input_list):
+    length =len (input_list)
+    length = int(length/2)
+    learning_list = input_list[length:]
+    testing_list = input_list[:length]
+    return (learning_list,testing_list)
+
+
 def fitness_check(rules, input_list):
-    rules
+    for i in range(0,len(rules)):
+        fitness = 0      
+        rule_string = ''.join(rules[i][0])
+        print("list=",rule_string)
+        for data in input_list:
+            print("rule string/datastring",rule_string,data[0])
+            if re.match(rule_string,data[0]):
+                fitness += 1
+                if rule_string[1] == data[1]:
+                    fitness += 1
+            rules[i][2]=fitness
+        print("rules = ", rules)
+    return rules
+    """
+        mutating_gene = parent_gene[i]
+        gene_length = len(mutating_gene[0])
+        for x in range (0, gene_length) :
+            if (random.randint(0,99) < mutation_chance):
+                mutating_gene[0][x] = random.choice(['0','1','[01]'])
     for key, member in rules.items():
         fitness = 0
         #print ("rule_string", rules)
@@ -98,7 +140,7 @@ def fitness_check(rules, input_list):
                 if member['result'] == data[1]:
                     fitness += 1
         rules[key]['fitness'] = fitness
-    return rules
+    return rules"""
 """
 def fitness_check(rules,input_list):
     for x in range(0,len(rules)):
