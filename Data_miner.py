@@ -26,7 +26,7 @@ def main():
     #insert probability of mutation
     mutation_chance = 20
     #Number of rules to evolve
-    Rule_ammount = 8
+    Rule_ammount = 30
     #end of chanibles______________________________
     saved_rules = []
     solution = []
@@ -112,29 +112,37 @@ def grab_file(filepath):
 def rules_test(rules,input_list):
     rule_corrent = 0
     rule_incorrect = 0
+    rule_unmatched = 0
     for i in range(0,len(rules)):
         fitness = 0      
         rule_string = ''.join(rules[i][0])
 
         #print("list=",input_list)
 
-        
+        rule_untriggered = 0
         for data in input_list:
             #print("rule string/datastring",rule_string,data[0])
-            works_for_rule = 0
             if re.match(rule_string,data[0]):#if every part of the rule is matched
                 if int(rules[i][1]) == int(data[1]):#+1 to fitness for exactly matching the result
                     fitness += 1
+                    rule_corrent += 1
+                    rule_untriggered = 0
                 else:
                     fitness -= -1 #-1 to fitness for not matching result
+                    rule_incorrect += 1
+                    rule_untriggered = 0
+            else:
+                rule_untriggered += 1
             if (fitness>0):
                 rules[i][2]=fitness
-                rule_corrent += 1
+                
             else:
                 rules[i][2]=fitness
-                rule_incorrect += 1
+            if (rule_untriggered > 15):
+                rule_unmatched += 1
+                
     print("the fitness of the solution = ",rules)
-    print("correct rules",rule_corrent,"Incorrect rules",rule_incorrect)
+    print("correct rules",rule_corrent,"Incorrect rules",rule_incorrect,"untriggered rule", rule_unmatched)
     return rules
 
 #This function takes a single input list, cuts it in half and and assigns 1/2 of the values into each one

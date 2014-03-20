@@ -125,14 +125,16 @@ def rules_test(rules,input_list):
             if re.match(rule_string,data[0]):#if every part of the rule is matched
                 if int(rules[i][1]) == int(data[1]):#+1 to fitness for exactly matching the result
                     fitness += 1
+                    rule_corrent += 1
                 else:
                     fitness -= -1 #-1 to fitness for not matching result
+                    rule_incorrect += 1
             if (fitness>0):
                 rules[i][2]=fitness
-                rule_corrent += 1
+                
             else:
                 rules[i][2]=fitness
-                rule_incorrect += 1
+                
     print("the fitness of the solution = ",rules)
     print("correct rules",rule_corrent,"Incorrect rules",rule_incorrect)
     return rules
