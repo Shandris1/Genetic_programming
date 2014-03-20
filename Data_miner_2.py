@@ -14,7 +14,7 @@ def main():
     top_fitness_member = []
     #Beginning of changibles__________________________
     #insert length of the gene here
-    L = 5
+    L = 6
     #insert the population size here
     Num = 50
     #insert number of parents here
@@ -26,7 +26,7 @@ def main():
     #insert probability of mutation
     mutation_chance = 20
     #Number of rules to evolve
-    Rule_ammount = 8
+    Rule_ammount = 7
     #end of chanibles______________________________
     saved_rules = []
     solution = []
@@ -34,7 +34,7 @@ def main():
     #populate the array with random binary number
     #replace pool fit and intergrate it into pool_gene
 
-    learning_list,testing_list = grab_file ('n:/data1.txt')
+    learning_list,testing_list = grab_file ('n:/data2.txt')
 
     for iterations in range(0,Rule_ammount):
         if iterations>Rule_ammount/2:
