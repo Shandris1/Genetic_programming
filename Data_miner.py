@@ -26,7 +26,7 @@ def main():
     #insert probability of mutation
     mutation_chance = 20
     #Number of rules to evolve
-    Rule_ammount = 30
+    Rule_ammount = 20
     #end of chanibles______________________________
     saved_rules = []
     solution = []
@@ -65,14 +65,14 @@ def main():
             Averege_fitness = Calculate_averege_fit (pool_gene, Num)
             #print("        Total_fitness=" ,Total_fitness)
             #print("      Averege_fitness=" ,Averege_fitness)
-            highest_fitness_total = Total_fitness if Total_fitness > highest_fitness_total else highest_fitness_total
+            highest_fitness_total = Total_fitness if Total_fitness > highest_fitness_total else highest_fitness_total#saves highest recorded fitness sum
             #print("highest_fitness_total=",highest_fitness_total)
             #print(" highest_member_total= ",top_fitness_member[2])
             #print("top_fitness_member = ", top_fitness_member)
             #if top_fitness_member[0][2]==L:
             #    print("success! generations used =",gen)
             #    break
-            p, Averege_fitness, Total_fitness = 0,0,0
+            p, Averege_fitness, Total_fitness = 0,0,0 #resets variables for following run-through
             pool_fit = []
         top_fitness_member = find_top_fitness(pool_gene,top_fitness_member)
         saved_rules.append(top_fitness_member)
@@ -129,16 +129,17 @@ def rules_test(rules,input_list):
             if (rule_untriggered > 15):
                 rule_unmatched += 1
                 
-    print("the fitness of the solution = ",rules)
-    print("correct rules",rule_corrent,"Incorrect rules",rule_incorrect,"untriggered rule", rule_unmatched)
+    #print("the fitness of the solution = ",rules)
+    print("correct rules",rule_corrent,"Incorrect rules",rule_incorrect,"untriggered data", rule_unmatched)
     return rules
 
 #This function takes a single input list, cuts it in half and and assigns 1/2 of the values into each one
 def split_list(input_list):
     length =len (input_list) # determine the length of input_list
-    length = int(length/2) 
+    length = int(length/3) 
     learning_list = input_list[length:] # assign the first half of the list to learning_list
     testing_list = input_list[:length] # assigns the second half to testing_list
+    print (testing_list)
     return (learning_list,testing_list)
 
 #This function checks the fitness of the rules against the list
