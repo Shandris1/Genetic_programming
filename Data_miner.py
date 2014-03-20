@@ -39,54 +39,42 @@ def main():
     for iterations in range(0,Rule_ammount):
         if iterations>Rule_ammount/2:
             Current_rule_output=0
-        pool_gene = initialise_rule_pool(Num,L,Current_rule_output)
+        pool_gene = initialise_rule_pool(Num,L,Current_rule_output) # initialises the rule set as pool_gene
         #pp.pprint(pool_gene)
-        pool_gene = fitness_check (pool_gene,learning_list,saved_rules)
-        #for i in range(0,Num) :
-        #    pool_fit.append(sum (pool_gene[i][0]))
-        #    print ('this parent\'s fitness = ',pool_fit[i])
+        pool_gene = fitness_check (pool_gene,learning_list,saved_rules) # assigns fitness to the pool_gene
         for i in range(0,len(pool_gene)):
             Total_fitness += pool_gene[i][2]
         Averege_fitness = Calculate_averege_fit (pool_gene, Num)
-        #print ("pool_gene",pool_gene)
         top_fitness_member = pool_gene[0]
-        #print("Total_fitness" ,Total_fitness)
-        #print("Averege_fitness" ,Averege_fitness)
     #Main loop of the function
         for gen in range(0,Overall_generations) :
             top_fitness_member = find_top_fitness(pool_gene,top_fitness_member)
-            parent_gene = roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,top_fitness_member)
-            #print("parent_gene = ", parent_gene)
-            #parent_gene = tournament_selection(pool_gene[0],pool_fit,Num,Parents,top_fitness_member)
-            #for p in range(0,Parents):
-            #    parent_fit.append(sum (parent_gene[p][0]))
-            #Total_fitness = sum(parent_gene[p][0])
-            #Averege_fitness = Calculate_averege_fit (parent_fit, Num)
-            #print("parent_gene",parent_gene)
-            mutant_gene=Mutation(parent_gene,mutation_chance,Num)
+            parent_gene = roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,top_fitness_member)# performs roulette wheel selection on pool_gene
+            mutant_gene=Mutation(parent_gene,mutation_chance,Num)# performs unified mutation
             #print("parent_gene",parent_gene)
             #print("mutation   ",mutant_gene)
-            crossed_gene=Crossover(mutant_gene,Crossover_chance,Num)
+            crossed_gene=Crossover(mutant_gene,Crossover_chance,Num) # performs single point crossover
             
             
 
-            pool_gene = crossed_gene
+            pool_gene = crossed_gene # prepares the rule set for going back to top
             pool_gene = fitness_check (pool_gene,learning_list,saved_rules)
-            pp.pprint(pool_gene)
+            #pp.pprint(pool_gene)
             for i in range(0,len(pool_gene)):
                 Total_fitness += pool_gene[i][2]
             Averege_fitness = Calculate_averege_fit (pool_gene, Num)
-            print("        Total_fitness=" ,Total_fitness)
-            print("      Averege_fitness=" ,Averege_fitness)
+            #print("        Total_fitness=" ,Total_fitness)
+            #print("      Averege_fitness=" ,Averege_fitness)
             highest_fitness_total = Total_fitness if Total_fitness > highest_fitness_total else highest_fitness_total
-            print("highest_fitness_total=",highest_fitness_total)
-            print(" highest_member_total= ",top_fitness_member[2])
-            print("top_fitness_member = ", top_fitness_member)
-            if top_fitness_member[0][2]==L:
-                print("success! generations used =",gen)
-                break
+            #print("highest_fitness_total=",highest_fitness_total)
+            #print(" highest_member_total= ",top_fitness_member[2])
+            #print("top_fitness_member = ", top_fitness_member)
+            #if top_fitness_member[0][2]==L:
+            #    print("success! generations used =",gen)
+            #    break
             p, Averege_fitness, Total_fitness = 0,0,0
             pool_fit = []
+        top_fitness_member = find_top_fitness(pool_gene,top_fitness_member)
         saved_rules.append(top_fitness_member)
         top_fitness_member = []
     print("Solution:",saved_rules)
@@ -182,14 +170,14 @@ def fitness_check(rules, input_list,saved_rules):
             #print("rule string/datastring",rule_string,data[0])
             if re.match(rule_string,data[0]):#+1 to fitness for matching every part of the rule
                 fitness += 5
-                if int(rules[i][1]) == int(data[1]):#+1 to fitness for exactly matching the result
+                if int(rules[i][1]) == int(data[1]):#+50 to fitness for exactly matching the result
                     fitness += 50
                 else:
                     fitness -= 100 #-100 to fitness for matching the opposite result, as exact matching of opposite result makes rule useless
             if (fitness>0):
                 rules[i][2]=fitness
             else:
-                rules[i][2]=0
+                rules[i][2]=0# assign fitness 0 if fitness is negarive, as roulette wheel does not work with negative fitness
 
         #print("rules = ", rules)
     #print("rule_string =", rules)
