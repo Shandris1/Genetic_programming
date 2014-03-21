@@ -136,10 +136,9 @@ def rules_test(rules,input_list):
 #This function takes a single input list, cuts it in half and and assigns 1/2 of the values into each one
 def split_list(input_list):
     length =len (input_list) # determine the length of input_list
-    length = int(length/3) 
+    length = int(length/2) 
     learning_list = input_list[length:] # assign the first half of the list to learning_list
     testing_list = input_list[:length] # assigns the second half to testing_list
-    print (testing_list)
     return (learning_list,testing_list)
 
 #This function checks the fitness of the rules against the list
@@ -271,6 +270,8 @@ def Mutation(parent_gene,mutation_chance,population_size):
     #print("mutant_gene",mutant_gene)
     return mutant_gene_pool
 
+
+#initiaties single point crossover
 def Crossover(mutant_gene,Crossover_chance,population_size):
     #gene_length = len(mutant_gene)
     #print("crossover_gene",mutant_gene)
