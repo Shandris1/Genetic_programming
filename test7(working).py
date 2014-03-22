@@ -103,6 +103,7 @@ def roulette_wheel_selection(pool_gene,pool_fit,Num,Parents,Best_member):
         parent_gene[x] = list(pool_gene[i])
     parent_gene[0] = list(Best_member[0])
     return parent_gene
+    
 """
 
 def tournament_selection(pool_gene,pool_fit,Num,Parents,Best_member):
